@@ -84,7 +84,9 @@ class k52App : Application(){
         //Call the code to initialize the models
         val cRepo:ChallengeRepo = ChallengeRepo()
         cRepo.setupInitialAmountAndWeeks()
-        cRepo.calcSaveTotals(2f)
+
+        if(cRepo.getInitialChallengeAmounts()?.initialAmount == 0f)
+            cRepo.calcSaveTotals(2f)
     }
 
     public override fun attachBaseContext(base: Context?) {

@@ -156,7 +156,42 @@ class ChallengeRepo(){
         rlm?.commitTransaction()
     }
 
+    //fun calcSaveTotalsAndUpdateTextField()
+    fun calcSaveTotalsUpdateTextView(initialAmount:Float){
+        var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
 
+        rlm?.beginTransaction()
+        initialChallenge?.initialAmount = initialAmount
+
+        var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
+
+        var i = 0
+        var totalAmount:Float = 0f
+
+        lsInitialCats?.forEach { w ->
+            w.weekDeposit = (w.weekNumber * initialAmount)
+            w.weekTotal = w.weekDeposit + (lsInitialCats.get(i)?.weekTotal as Float)
+            i += 1
+        }
+
+
+        //Calculate the total amount
+        lsInitialCats?.forEach { w ->
+            totalAmount += (w?.weekDeposit as Float)
+        }
+
+        initialChallenge?.totalAmount = totalAmount
+
+        rlm?.commitTransaction()
+
+//        displayResults()
+    }
+
+
+    //Get initial challenge amounts
+    fun getInitialChallengeAmounts() : ChallengeModel?{
+        return rlm?.where(ChallengeModel::class.java)?.findFirst()
+    }
 
     fun displayResults(){
         var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
@@ -166,7 +201,7 @@ class ChallengeRepo(){
         if(initialChallenge != null){
 
             txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount) + " " + act?.resources?.getString(R.string.currency))
-            etInitialAmount?.setText(getTwoDp(initialChallenge?.initialAmount))
+//            etInitialAmount?.setText(getTwoDp(initialChallenge?.initialAmount))
 
             if(lsInitialCats?.size as Int > 0){
                 var wkAdapter:WeekAdapter = WeekAdapter(act as Activity, lsInitialCats)
