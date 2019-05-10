@@ -24,5 +24,7 @@
     <string name="reportEmptyTitle">No items are available for the report. Try with new criteria</string>
 
     <string name="currency">KES</string>
+    <string name="search">Search</string>
 
+    <string name="refresh">Refresh</string>
 </resources>

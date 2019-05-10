@@ -1,15 +1,21 @@
 package k.fiftytwochallenge.activities
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.content.res.Configuration
+import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,9 +25,9 @@ import com.santalu.emptyview.EmptyView
 import k.fiftytwochallenge.R
 import k.fiftytwochallenge.dataModels.ChallengeModel
 import k.fiftytwochallenge.getTwoDp
+import k.fiftytwochallenge.getZeroDp
 import k.fiftytwochallenge.models.ChallengeRepo
 import k.fiftytwochallenge.utils.Collapsar
-import java.lang.Exception
 
 class MainCollapsingTlbarActivity : AppCompatActivity(){
 
@@ -60,7 +66,7 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
         try{
             chRepo?.displayResults()
             initChallenge = chRepo?.getInitialChallengeAmounts()
-            etInitialAmount?.setText(getTwoDp(initChallenge?.initialAmount as Float))
+            etInitialAmount?.setText(getZeroDp(initChallenge?.initialAmount as Float))
         }catch (r: Exception){
             r.printStackTrace()
         }
@@ -93,7 +99,7 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
         //Edit initial amount
         etInitialAmount?.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
-                chRepo?.displayResults()
+//                chRepo?.displayResults()
             }
 
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -105,9 +111,9 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
                     val x = (p0.toString()).toFloat()
                     if (x > 0 && x < 50000000) {
                         //Call the methods to update the values
-                        chRepo?.calcSaveTotalsUpdateTextView(x)
+                        chRepo?.calcAndDisplay(x)
                     }else{
-                        etInitialAmount?.setText(getTwoDp(initChallenge?.initialAmount as Float))
+                        etInitialAmount?.setText(getZeroDp(initChallenge?.initialAmount as Float))
                         Toast.makeText(this@MainCollapsingTlbarActivity, "Cannot have values greater than 0 or less than 50,000,000", Toast.LENGTH_SHORT).show()
                     }
                 }
@@ -116,4 +122,46 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_new, menu)
+        val searchItem = menu?.findItem(R.id.mnuSearch)
+        val scView = searchItem?.actionView as SearchView
+        scView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                try{
+
+                    var i = Integer.parseInt(query)
+                    chRepo?.searchForWeek(i)
+                }catch (r:Exception){
+                    r.printStackTrace()
+                }
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                return false
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if(item?.itemId == R.id.mnuSearch){
+            Toast.makeText(this, "Search for week by entering the week number", Toast.LENGTH_SHORT).show()
+        }else if(item?.itemId == R.id.mnuRefresh){
+            chRepo?.displayResults()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig?.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+            Toast.makeText(this, "keyboard visible", Toast.LENGTH_SHORT).show();
+        } else if (newConfig?.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
+            Toast.makeText(this, "keyboard hidden", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

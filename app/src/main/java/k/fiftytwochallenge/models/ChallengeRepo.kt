@@ -1,8 +1,10 @@
 package k.fiftytwochallenge.models
 
 import android.app.Activity
+import android.os.AsyncTask
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.santalu.emptyview.EmptyView
 import io.realm.Realm
@@ -93,41 +95,6 @@ class ChallengeRepo(){
     }
 
     //Calculate and save the model totals()
-    //This doen't calculate correct values
-//    fun calcSaveTotals(initialAmount:Float){
-//        var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
-//
-//        rlm?.beginTransaction()
-//        initialChallenge?.initialAmount = initialAmount
-//
-//        var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
-//
-//        var i = 0
-//        var totalAmount:Float = 0f
-//
-//        lsInitialCats?.forEach { w ->
-//            if(w.weekNumber == 1) {
-//                w.weekDeposit = initialAmount
-//                w.weekTotal = initialAmount
-//            }else{
-//                w.weekDeposit = initialAmount
-//                w.weekTotal = w.weekDeposit as Float + lsInitialCats.get(i)?.weekDeposit as Float
-//            }
-//
-//            i += 1
-//        }
-//
-//
-//        //Calculate the total amount
-//        lsInitialCats?.forEach { w ->
-//            totalAmount += (w?.weekDeposit as Float)
-//        }
-//
-//        initialChallenge?.totalAmount = totalAmount
-//
-//        rlm?.commitTransaction()
-//    }
-
     fun calcSaveTotals(initialAmount:Float){
         var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
 
@@ -141,8 +108,8 @@ class ChallengeRepo(){
 
         lsInitialCats?.forEach { w ->
             w.weekDeposit = (w.weekNumber * initialAmount)
-            w.weekTotal = w.weekDeposit + (lsInitialCats.get(i)?.weekTotal as Float)
-            i += 1
+            totalAmount += (w?.weekDeposit as Float)
+            w.weekTotal = totalAmount
         }
 
 
@@ -156,37 +123,108 @@ class ChallengeRepo(){
         rlm?.commitTransaction()
     }
 
-    //fun calcSaveTotalsAndUpdateTextField()
-    fun calcSaveTotalsUpdateTextView(initialAmount:Float){
-        var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
+    //Calculate and trigger display of the fields
+    fun calcSaveTotalsUpdateTextView(initialAmount:Float):Boolean{
+        try {
+            var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
 
-        rlm?.beginTransaction()
-        initialChallenge?.initialAmount = initialAmount
+            rlm?.beginTransaction()
+            initialChallenge?.initialAmount = initialAmount
 
-        var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
+            var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
 
-        var i = 0
-        var totalAmount:Float = 0f
+            var i = 0
+            var totalAmount: Float = 0f
 
-        lsInitialCats?.forEach { w ->
-            w.weekDeposit = (w.weekNumber * initialAmount)
-            w.weekTotal = w.weekDeposit + (lsInitialCats.get(i)?.weekTotal as Float)
-            i += 1
+            lsInitialCats?.forEach { w ->
+                w.weekDeposit = (w.weekNumber * initialAmount)
+                totalAmount += (w?.weekDeposit as Float)
+                w.weekTotal = totalAmount
+            }
+
+            initialChallenge?.totalAmount = totalAmount
+
+            rlm?.commitTransaction()
+            txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+            return true
+        }catch (r:Exception){
+            r.printStackTrace()
+            return false
         }
 
 
-        //Calculate the total amount
-        lsInitialCats?.forEach { w ->
-            totalAmount += (w?.weekDeposit as Float)
-        }
 
-        initialChallenge?.totalAmount = totalAmount
-
-        rlm?.commitTransaction()
-
-//        displayResults()
     }
 
+
+
+    fun calcAndDisplay(initialAmount:Float){
+        object:AsyncTask<Void, Void, Boolean>(){
+            override fun doInBackground(vararg params: Void?): Boolean {
+                try {
+                    var rlm = Realm.getDefaultInstance()
+                    var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
+
+                    rlm?.beginTransaction()
+                    initialChallenge?.initialAmount = initialAmount
+
+                    var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
+
+                    var i = 0
+                    var totalAmount: Float = 0f
+
+                    lsInitialCats?.forEach { w ->
+                        w.weekDeposit = (w.weekNumber * initialAmount)
+                        totalAmount += (w?.weekDeposit as Float)
+                        w.weekTotal = totalAmount
+                    }
+
+                    initialChallenge?.totalAmount = totalAmount
+
+                    rlm?.commitTransaction()
+                    txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+                    return true
+                }catch (r:Exception){
+                    r.printStackTrace()
+                    return false
+                }
+
+            }
+
+            override fun onPostExecute(result: Boolean?) {
+                super.onPostExecute(result)
+                var rlm = Realm.getDefaultInstance()
+                var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
+
+                var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
+
+                if(initialChallenge != null){
+                    txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount) + " " + act?.resources?.getString(R.string.currency))
+//            etInitialAmount?.setText(getTwoDp(initialChallenge?.initialAmount))
+
+                    if(lsInitialCats?.size as Int > 0){
+                        var wkAdapter:WeekAdapter = WeekAdapter(act as Activity, lsInitialCats)
+                        rcView?.adapter = wkAdapter
+                        empView?.showContent()
+                    }else{
+                        empView?.showEmpty()
+                    }
+                }
+            }
+        }.execute()
+    }
+
+    fun searchForWeek(weekNumber:Int){
+        var lsInitialCats = rlm?.where(WeekModel::class.java)?.equalTo("weekNumber", weekNumber)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
+        if(lsInitialCats?.size as Int > 0){
+            var wkAdapter:WeekAdapter = WeekAdapter(act as Activity, lsInitialCats)
+            rcView?.adapter = wkAdapter
+            empView?.showContent()
+        }else{
+            empView?.showEmpty()
+            Toast.makeText(act, "No such week found", Toast.LENGTH_LONG).show()
+        }
+    }
 
     //Get initial challenge amounts
     fun getInitialChallengeAmounts() : ChallengeModel?{
@@ -194,12 +232,12 @@ class ChallengeRepo(){
     }
 
     fun displayResults(){
+        //Use async methods to ensure
         var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
 
         var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
 
         if(initialChallenge != null){
-
             txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount) + " " + act?.resources?.getString(R.string.currency))
 //            etInitialAmount?.setText(getTwoDp(initialChallenge?.initialAmount))
 

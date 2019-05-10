@@ -85,8 +85,11 @@ class k52App : Application(){
         val cRepo:ChallengeRepo = ChallengeRepo()
         cRepo.setupInitialAmountAndWeeks()
 
-        if(cRepo.getInitialChallengeAmounts()?.initialAmount == 0f)
-            cRepo.calcSaveTotals(2f)
+        if(cRepo.getInitialChallengeAmounts()?.initialAmount == 0f) {
+            cRepo.calcSaveTotals(50f)
+            //First Time Running Up
+            Toast.makeText(applicationContext, "Welcome, your initial value has been set to 50, you can edit it any time.", Toast.LENGTH_SHORT).show()
+        }
     }
 
     public override fun attachBaseContext(base: Context?) {
@@ -145,6 +148,17 @@ fun getCurrentDateTimeReq():String{
 fun getTwoDp(num: Float): String? {
     try {
         return String.format("%.02f", num)
+    } catch (r: Exception) {
+        r.printStackTrace()
+        return null
+    }
+
+}
+
+//ZERO DP
+fun getZeroDp(num: Float): String? {
+    try {
+        return String.format("%.0f", num)
     } catch (r: Exception) {
         r.printStackTrace()
         return null
