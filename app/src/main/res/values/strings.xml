@@ -4,7 +4,7 @@
     <string name="enterAmount">Enter Initial Amount From 0 to 50,000,000</string>
     <string name="initialAmount">Initial Amount</string>
 
-    <string name="totalSaved">Total Amount Saved: </string>
+    <string name="totalSaved">Total Amount Saved</string>
     <string name="weeks">Weeks</string>
 
     <string name="setWeekAmount">Set Week Amount</string>
@@ -22,5 +22,7 @@
     <string name="loadingTitle">Loading...</string>
     <string name="cartEmptyTitle">No items on the cart, Click on the add button to start</string>
     <string name="reportEmptyTitle">No items are available for the report. Try with new criteria</string>
+
+    <string name="currency">KES</string>
 
 </resources>

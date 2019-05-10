@@ -2,6 +2,7 @@ package k.fiftytwochallenge
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.widget.Toast
 import androidx.multidex.MultiDex
@@ -11,6 +12,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
 import io.realm.Realm
 import io.realm.RealmConfiguration
+import k.fiftytwochallenge.models.ChallengeRepo
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -79,7 +81,10 @@ class k52App : Application(){
         instance.kApp = this
         instance.rlm = Realm.getDefaultInstance()
 
-//        DataFiller()
+        //Call the code to initialize the models
+        val cRepo:ChallengeRepo = ChallengeRepo()
+        cRepo.setupInitialAmountAndWeeks()
+        cRepo.calcSaveTotals(2f)
     }
 
     public override fun attachBaseContext(base: Context?) {
@@ -145,6 +150,15 @@ fun getTwoDp(num: Float): String? {
 
 }
 
+//Integer to string
+fun intToString(inte:Int) : String?{
+    try{
+        return inte.toString()
+    }catch (r:Exception){
+        return null
+    }
+}
+
 //Converts floats to strings
 fun getFloatString(num: String): Float {
     try {
@@ -155,3 +169,8 @@ fun getFloatString(num: String): Float {
     }
 }
 
+//Get a random color
+fun getRandomColor() : Int{
+    val rnd = Random()
+    return Color.argb(255, rnd.nextInt(256), rnd.nextInt(256), rnd.nextInt(256))
+}

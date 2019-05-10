@@ -19,8 +19,8 @@ open class ChallengeModel() : RealmObject(){
 
     @PrimaryKey
     var challengeId:String? = ""
-    var initialAmount:Float? = 0f
-    var totalAmount:Float? = 0f
+    var initialAmount:Float = 0f
+    var totalAmount:Float = 0f
     var timeStamp:Date? = null
 
 }
