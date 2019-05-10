@@ -85,8 +85,8 @@ class k52App : Application(){
         val cRepo:ChallengeRepo = ChallengeRepo()
         cRepo.setupInitialAmountAndWeeks()
 
-        if(cRepo.getInitialChallengeAmounts()?.initialAmount == 0) {
-            cRepo.calcSaveTotals(50)
+        if(cRepo.getInitialChallengeAmounts()?.initialAmount == 0f) {
+            cRepo.calcSaveTotals(50f)
             //First Time Running Up
             Toast.makeText(applicationContext, "Welcome, your initial value has been set to 50, you can edit it any time.", Toast.LENGTH_SHORT).show()
         }
@@ -145,15 +145,26 @@ fun getCurrentDateTimeReq():String{
 }
 
 //Two dp
-fun getTwoDp(num: Int?): String? {
-    try{
-        return num.toString()
-    }catch (r:Exception){
+fun getTwoDp(num: Float): String? {
+    try {
+        return String.format("%.0f", num)
+    } catch (r: Exception) {
+        r.printStackTrace()
         return null
     }
 
 }
 
+//ZERO DP
+fun getZeroDp(num: Float): String? {
+    try {
+        return String.format("%.0f", num)
+    } catch (r: Exception) {
+        r.printStackTrace()
+        return null
+    }
+
+}
 
 //Integer to string
 fun intToString(inte:Int) : String?{
