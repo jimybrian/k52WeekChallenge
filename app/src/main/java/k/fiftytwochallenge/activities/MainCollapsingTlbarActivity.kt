@@ -85,11 +85,23 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
         setSupportActionBar(tlBar)
         supportActionBar?.title = ""
 
+        clpTlb?.setTitle("")
+        tlBar?.setTitle("")
+        //Tries to show the total amount on the toolbar
         appBar?.addOnOffsetChangedListener(object:Collapsar() {
             override fun onStateChanged(v:AppBarLayout, st:State) {
                 when(st){
-                    State.COLLAPSED -> supportActionBar?.setTitle((getTwoDp(initChallenge?.totalAmount as Float) + " " + resources?.getString(R.string.currency)))
-                    State.EXPANDED -> supportActionBar?.setTitle(resources?.getString(R.string.app_name))
+                    State.COLLAPSED -> {
+                        supportActionBar?.setTitle((getTwoDp(initChallenge?.totalAmount as Float) + " " + resources?.getString(
+                                R.string.currency
+                            )))
+                        clpTlb?.setTitle((getTwoDp(initChallenge?.totalAmount as Float) + " " + resources?.getString(R.string.currency)))
+                    }
+                    State.EXPANDED -> {
+                        supportActionBar?.setTitle(resources?.getString(R.string.app_name))
+                        clpTlb?.setTitle("")
+                    }
+
                 }
             }
         })
@@ -109,6 +121,7 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (!TextUtils.isEmpty(p0.toString())) {
                     val x = (p0.toString()).toFloat()
+                    //Validate inputs that they fall in the required range
                     if (x > 0 && x < 50000000) {
                         //Call the methods to update the values
                         chRepo?.calcAndDisplay(x)

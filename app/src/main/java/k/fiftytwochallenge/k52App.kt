@@ -147,7 +147,7 @@ fun getCurrentDateTimeReq():String{
 //Two dp
 fun getTwoDp(num: Float): String? {
     try {
-        return String.format("%.02f", num)
+        return String.format("%.0f", num)
     } catch (r: Exception) {
         r.printStackTrace()
         return null
