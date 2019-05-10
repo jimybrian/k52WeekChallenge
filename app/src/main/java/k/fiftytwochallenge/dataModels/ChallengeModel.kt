@@ -10,7 +10,7 @@ open class ChallengeModel() : RealmObject(){
 
     }
 
-    constructor(challengeId:String, initialAmount:Float, totalAmount:Float, timeStamp:Date):this(){
+    constructor(challengeId:String, initialAmount:Int, totalAmount:Int, timeStamp:Date):this(){
         this.challengeId = challengeId
         this.initialAmount = initialAmount
         this.totalAmount = totalAmount
@@ -19,8 +19,8 @@ open class ChallengeModel() : RealmObject(){
 
     @PrimaryKey
     var challengeId:String? = ""
-    var initialAmount:Float = 0f
-    var totalAmount:Float = 0f
+    var initialAmount:Int = 0
+    var totalAmount:Int = 0
     var timeStamp:Date? = null
 
 }

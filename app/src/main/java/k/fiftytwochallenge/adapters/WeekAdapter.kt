@@ -52,9 +52,9 @@ class WeekAdapter(act:Activity, lsWeeks:List<WeekModel>) : RecyclerView.Adapter<
     override fun onBindViewHolder(holder: WeekViewHolder, position: Int) {
         val week = this.lsWeeks?.get(position)
 
-        holder?.txWeekTotal?.setText("Total " + getTwoDp(week?.weekTotal as Float) + " " + act?.resources?.getString(R.string.currency))
-        holder?.txWeekDeposit?.setText("Deposit " + getTwoDp(week?.weekDeposit as Float) + " " + act?.resources?.getString(R.string.currency))
-        holder?.txWeekNo?.setText("Week # " + intToString(week?.weekNumber as Int))
+        holder?.txWeekTotal?.setText("Total " + getTwoDp(week?.weekTotal as Int) + " " + act?.resources?.getString(R.string.currency))
+        holder?.txWeekDeposit?.setText("Deposit " + getTwoDp(week?.weekDeposit as Int) + " " + act?.resources?.getString(R.string.currency))
+        holder?.txWeekNo?.setText("Week # " + intToString(week?.weekNumber as Int as Int))
         holder?.imgColor?.setBackgroundColor(week?.weekColor as Int)
 
     }

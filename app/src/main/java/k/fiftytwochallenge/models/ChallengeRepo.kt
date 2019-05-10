@@ -53,8 +53,8 @@ class ChallengeRepo(){
 
         var challengeModel:ChallengeModel = ChallengeModel()
         challengeModel.challengeId = UUID.randomUUID().toString()
-        challengeModel.initialAmount = 2f
-        challengeModel.totalAmount = 0f
+        challengeModel.initialAmount = 0
+        challengeModel.totalAmount = 0
         challengeModel.timeStamp = getCurrentDate()
 
 
@@ -68,8 +68,8 @@ class ChallengeRepo(){
             var weekModel:WeekModel = WeekModel()
             weekModel.weekId = UUID.randomUUID().toString()
             weekModel.weekNumber = i
-            weekModel.weekDeposit = 0f
-            weekModel.weekTotal = 0f
+            weekModel.weekDeposit = 0
+            weekModel.weekTotal = 0
             weekModel.weekColor = getRandomColor()
             weekModel.timeStamp = getCurrentDate()
 
@@ -95,7 +95,7 @@ class ChallengeRepo(){
     }
 
     //Calculate and save the model totals()
-    fun calcSaveTotals(initialAmount:Float){
+    fun calcSaveTotals(initialAmount:Int){
         var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
 
         rlm?.beginTransaction()
@@ -104,27 +104,27 @@ class ChallengeRepo(){
         var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
 
         var i = 0
-        var totalAmount:Float = 0f
+        var totalAmount:Int = 0
 
         lsInitialCats?.forEach { w ->
             w.weekDeposit = (w.weekNumber * initialAmount)
-            totalAmount += (w?.weekDeposit as Float)
-            w.weekTotal = totalAmount
+            totalAmount += (w?.weekDeposit as Int)
+            w.weekTotal = totalAmount as Int
         }
 
 
         //Calculate the total amount
         lsInitialCats?.forEach { w ->
-            totalAmount += (w?.weekDeposit as Float)
+            totalAmount += (w?.weekDeposit as Int)
         }
 
-        initialChallenge?.totalAmount = totalAmount
+        initialChallenge?.totalAmount = totalAmount as Int
 
         rlm?.commitTransaction()
     }
 
     //Calculate and trigger display of the fields
-    fun calcSaveTotalsUpdateTextView(initialAmount:Float):Boolean{
+    fun calcSaveTotalsUpdateTextView(initialAmount:Int):Boolean{
         try {
             var initialChallenge = rlm?.where(ChallengeModel::class.java)?.findFirst()
 
@@ -134,18 +134,18 @@ class ChallengeRepo(){
             var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
 
             var i = 0
-            var totalAmount: Float = 0f
+            var totalAmount: Int = 0
 
             lsInitialCats?.forEach { w ->
                 w.weekDeposit = (w.weekNumber * initialAmount)
-                totalAmount += (w?.weekDeposit as Float)
+                totalAmount += (w?.weekDeposit as Int)
                 w.weekTotal = totalAmount
             }
 
             initialChallenge?.totalAmount = totalAmount
 
             rlm?.commitTransaction()
-            txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+            txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Int) + " " + act?.resources?.getString(R.string.currency))
             return true
         }catch (r:Exception){
             r.printStackTrace()
@@ -158,7 +158,7 @@ class ChallengeRepo(){
 
 
 
-    fun calcAndDisplay(initialAmount:Float){
+    fun calcAndDisplay(initialAmount:Int){
         object:AsyncTask<Void, Void, Boolean>(){
             override fun doInBackground(vararg params: Void?): Boolean {
                 try {
@@ -171,18 +171,18 @@ class ChallengeRepo(){
                     var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
 
                     var i = 0
-                    var totalAmount: Float = 0f
+                    var totalAmount: Int = 0
 
                     lsInitialCats?.forEach { w ->
                         w.weekDeposit = (w.weekNumber * initialAmount)
-                        totalAmount += (w?.weekDeposit as Float)
+                        totalAmount += (w?.weekDeposit as Int)
                         w.weekTotal = totalAmount
                     }
 
                     initialChallenge?.totalAmount = totalAmount
 
                     rlm?.commitTransaction()
-                    txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+                    txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount) + " " + act?.resources?.getString(R.string.currency))
                     return true
                 }catch (r:Exception){
                     r.printStackTrace()

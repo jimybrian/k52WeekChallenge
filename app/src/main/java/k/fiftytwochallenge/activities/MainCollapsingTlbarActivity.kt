@@ -25,7 +25,6 @@ import com.santalu.emptyview.EmptyView
 import k.fiftytwochallenge.R
 import k.fiftytwochallenge.dataModels.ChallengeModel
 import k.fiftytwochallenge.getTwoDp
-import k.fiftytwochallenge.getZeroDp
 import k.fiftytwochallenge.models.ChallengeRepo
 import k.fiftytwochallenge.utils.Collapsar
 
@@ -66,7 +65,7 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
         try{
             chRepo?.displayResults()
             initChallenge = chRepo?.getInitialChallengeAmounts()
-            etInitialAmount?.setText(getZeroDp(initChallenge?.initialAmount as Float))
+            etInitialAmount?.setText(getTwoDp(initChallenge?.initialAmount as Int))
         }catch (r: Exception){
             r.printStackTrace()
         }
@@ -92,10 +91,10 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
             override fun onStateChanged(v:AppBarLayout, st:State) {
                 when(st){
                     State.COLLAPSED -> {
-                        supportActionBar?.setTitle((getTwoDp(initChallenge?.totalAmount as Float) + " " + resources?.getString(
+                        supportActionBar?.setTitle("Saved: " + (getTwoDp(initChallenge?.totalAmount as Int) + " " + resources?.getString(
                                 R.string.currency
                             )))
-                        clpTlb?.setTitle((getTwoDp(initChallenge?.totalAmount as Float) + " " + resources?.getString(R.string.currency)))
+                        clpTlb?.setTitle(("Saved: " + getTwoDp(initChallenge?.totalAmount as Int) + " " + resources?.getString(R.string.currency)))
                     }
                     State.EXPANDED -> {
                         supportActionBar?.setTitle(resources?.getString(R.string.app_name))
@@ -120,13 +119,13 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (!TextUtils.isEmpty(p0.toString())) {
-                    val x = (p0.toString()).toFloat()
+                    val x = (Integer.parseInt(p0.toString()))
                     //Validate inputs that they fall in the required range
                     if (x > 0 && x < 50000000) {
                         //Call the methods to update the values
                         chRepo?.calcAndDisplay(x)
                     }else{
-                        etInitialAmount?.setText(getZeroDp(initChallenge?.initialAmount as Float))
+                        etInitialAmount?.setText(getTwoDp(initChallenge?.initialAmount as Int))
                         Toast.makeText(this@MainCollapsingTlbarActivity, "Cannot have values greater than 0 or less than 50,000,000", Toast.LENGTH_SHORT).show()
                     }
                 }

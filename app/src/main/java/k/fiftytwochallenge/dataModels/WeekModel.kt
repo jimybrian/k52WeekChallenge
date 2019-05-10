@@ -11,7 +11,7 @@ open class WeekModel() : RealmObject(){
         //Empty default constructor
     }
 
-    constructor(weekId:String, weekNumber:Int, weekDeposit:Float, weekTotal:Float, weekColor:Int, timeStamp:Date):this() {
+    constructor(weekId:String, weekNumber:Int, weekDeposit:Int, weekTotal:Int, weekColor:Int, timeStamp:Date):this() {
         this.weekId = weekId
         this.weekNumber = weekNumber
         this.weekDeposit = weekDeposit
@@ -23,8 +23,8 @@ open class WeekModel() : RealmObject(){
     @PrimaryKey
     var weekId:String? = ""
     var weekNumber:Int = 0
-    var weekDeposit:Float = 0f
-    var weekTotal:Float = 0f
+    var weekDeposit:Int = 0
+    var weekTotal:Int = 0
     var weekColor:Int = 0
     var timeStamp:Date? = null
 
