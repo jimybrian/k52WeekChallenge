@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">k52Challenge</string>
+
+    <string name="enterAmount">Enter Initial Amount From 0 to 50,000,000</string>
+    <string name="initialAmount">Initial Amount</string>
+
+    <string name="totalSaved">Total Amount Saved: </string>
+    <string name="weeks">Weeks</string>
+
+    <string name="setWeekAmount">Set Week Amount</string>
+    <string name="weekTotal">Week Total</string>
+    <string name="totalAsOf">Total As Of: </string>
+
+    <!--Empty View-->
+    <string name="errorString">Sorry, we could not retrieve the items. Please try again.</string>
+    <string name="emptyString">Sorry there are no items.</string>
+    <string name="titleString">Loading...</string>
+    <string name="errorTryAgain">Try Again</string>
+    <string name="emptyButton">Add</string>
+    <string name="emptyTitle">Note</string>
+    <string name="errorTitle">Note</string>
+    <string name="loadingTitle">Loading...</string>
+    <string name="cartEmptyTitle">No items on the cart, Click on the add button to start</string>
+    <string name="reportEmptyTitle">No items are available for the report. Try with new criteria</string>
+
 </resources>
