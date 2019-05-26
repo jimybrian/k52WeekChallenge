@@ -15,6 +15,10 @@
         android:name=".k52App"
         android:theme="@style/AppTheme.NoActionBar">
 
+        <meta-data
+                android:name="com.google.android.gms.ads.APPLICATION_ID"
+                android:value="@string/adMobId"/>
+
         <activity android:name=".activities.MainActivity"
                   android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">

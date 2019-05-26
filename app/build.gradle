@@ -8,6 +8,16 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
 apply plugin: 'io.fabric'
 android {
+
+    signingConfigs {
+        config {
+            keyAlias 'k52Challenge'
+            keyPassword 'k52Challenge'
+            storeFile file('D:\\Code\\k52WeekChallenge\\app\\k52ChallengeKey.jks')
+            storePassword 'k52Challenge'
+        }
+    }
+
     compileSdkVersion 28
     defaultConfig {
         applicationId "k.fiftytwochallenge"
@@ -20,11 +30,20 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug_release_key {
+            manifestPlaceholders = [:]
+            signingConfig signingConfigs.config
+        }
+        debug {
+            signingConfig signingConfigs.config
         }
     }
 
@@ -69,19 +88,24 @@ dependencies {
     implementation 'com.mikepenz:actionitembadge:3.3.2@aar'
     implementation 'com.mikepenz:iconics-core:2.9.3@aar'
     implementation 'org.apache.commons:commons-lang3:3.6'
-    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.google.firebase:firebase-core:16.0.9'
     // Add dependency
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.8'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.aurelhubert:ahbottomnavigation:2.1.0'
 
+    implementation 'com.google.android.gms:play-services-ads:17.2.1'
+
     //SLIDE CODE
-    compile 'com.squareup.picasso:picasso:2.3.2'
-    compile 'com.nineoldandroids:library:2.4.0'
-    compile 'com.daimajia.slider:library:1.1.5@aar'
+    implementation 'com.squareup.picasso:picasso:2.3.2'
+    implementation 'com.nineoldandroids:library:2.4.0'
+    implementation 'com.daimajia.slider:library:1.1.5@aar'
 
 //    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    compile 'com.squareup.okhttp:okhttp:2.5.0'
+    implementation 'com.squareup.okhttp:okhttp:2.5.0'
 
     implementation 'com.google.android.material:material:1.0.0'
+
+//    implementation 'com.google.firebase:firebase-ads:17.2.1'
+//    implementation 'com.google.firebase:firebase-core:17.2.1'
 }
 apply plugin: 'com.google.gms.google-services'

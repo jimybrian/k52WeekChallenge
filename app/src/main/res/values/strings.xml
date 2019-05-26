@@ -27,4 +27,7 @@
     <string name="search">Search</string>
 
     <string name="refresh">Refresh</string>
+
+    <string name="adMobId">ca-app-pub-8369413100676672~7851324969</string>
+    <string name="adMobBannerId">ca-app-pub-8369413100676672/7353110442</string>
 </resources>

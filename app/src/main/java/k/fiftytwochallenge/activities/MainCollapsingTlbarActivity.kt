@@ -1,10 +1,9 @@
 package k.fiftytwochallenge.activities
 
-import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -14,17 +13,22 @@ import android.view.MenuItem
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.santalu.emptyview.EmptyView
 import k.fiftytwochallenge.R
 import k.fiftytwochallenge.dataModels.ChallengeModel
-import k.fiftytwochallenge.getTwoDp
+import k.fiftytwochallenge.getTwoDpComma
+import k.fiftytwochallenge.getTwoDpNoComma
 import k.fiftytwochallenge.models.ChallengeRepo
 import k.fiftytwochallenge.utils.Collapsar
 
@@ -33,9 +37,12 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_collapsing_toolbar)
-        initViews()
 
         startActivity(Intent(this, SplashScreenActivity::class.java))
+
+//        Crashlytics.getInstance().crash()
+
+        initViews()
 
         chRepo = ChallengeRepo(this as Activity, etInitialAmount as EditText,
             txTotalAmount as TextView, empView as EmptyView, rcView as RecyclerView)
@@ -59,13 +66,15 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
 
     var initChallenge:ChallengeModel? = null
 
+    var adView : AdView? = null
+
 
     override fun onResume() {
         super.onResume()
         try{
             chRepo?.displayResults()
             initChallenge = chRepo?.getInitialChallengeAmounts()
-            etInitialAmount?.setText(getTwoDp(initChallenge?.initialAmount as Float))
+            etInitialAmount?.setText(getTwoDpNoComma(initChallenge?.initialAmount as Float))
         }catch (r: Exception){
             r.printStackTrace()
         }
@@ -84,6 +93,13 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
         setSupportActionBar(tlBar)
         supportActionBar?.title = ""
 
+        MobileAds.initialize(this@MainCollapsingTlbarActivity, resources.getString(R.string.adMobId))
+
+        adView = findViewById(R.id.adView)
+//        adView?.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+        val adRequest = AdRequest.Builder().build()
+        adView?.loadAd(adRequest)
+
         clpTlb?.setTitle("")
         tlBar?.setTitle("")
         //Tries to show the total amount on the toolbar
@@ -91,10 +107,10 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
             override fun onStateChanged(v:AppBarLayout, st:State) {
                 when(st){
                     State.COLLAPSED -> {
-                        supportActionBar?.setTitle("Saved: " + (getTwoDp(initChallenge?.totalAmount as Float) + " " + resources?.getString(
+                        supportActionBar?.setTitle("Saved: " + (getTwoDpComma(initChallenge?.totalAmount as Float) + " " + resources?.getString(
                                 R.string.currency
                             )))
-                        clpTlb?.setTitle(("Saved: " + getTwoDp(initChallenge?.totalAmount as Float) + " " + resources?.getString(R.string.currency)))
+                        clpTlb?.setTitle(("Saved: " + getTwoDpComma(initChallenge?.totalAmount as Float) + " " + resources?.getString(R.string.currency)))
                     }
                     State.EXPANDED -> {
                         supportActionBar?.setTitle(resources?.getString(R.string.app_name))
@@ -118,16 +134,28 @@ class MainCollapsingTlbarActivity : AppCompatActivity(){
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (!TextUtils.isEmpty(p0.toString())) {
-                    val x = (p0.toString()).toFloat()
-                    //Validate inputs that they fall in the required range
-                    if (x > 0 && x < 50000000) {
-                        //Call the methods to update the values
-                        chRepo?.calcAndDisplay(x)
-                    }else{
-                        etInitialAmount?.setText(getTwoDp(initChallenge?.initialAmount as Float))
-                        Toast.makeText(this@MainCollapsingTlbarActivity, "Cannot have values greater than 0 or less than 50,000,000", Toast.LENGTH_SHORT).show()
-                    }
+                try {
+                    if (!TextUtils.isEmpty(p0.toString())) {
+                        val x = (p0.toString()).toFloat()
+                        //Validate inputs that they fall in the required range
+                        if (x > 0 && x < 50000000) {
+                            //Call the methods to update the values
+                            chRepo?.calcAndDisplay(x)
+                        } else {
+                            etInitialAmount?.setText(getTwoDpNoComma(initChallenge?.initialAmount as Float))
+//                        Toast.makeText(this@MainCollapsingTlbarActivity, "Cannot have values greater than 0 or less than 50,000,000", Toast.LENGTH_SHORT).show()
+                            object : AlertDialog.Builder(this@MainCollapsingTlbarActivity) {}
+                                .setTitle("Error")
+                                .setMessage("Please enter a value greater than 0 and less than 50,000,000")
+                                .setPositiveButton("Ok", DialogInterface.OnClickListener { dialog, which -> })
+                                .show()
+
+                        }
+                    } /*else {
+                        etInitialAmount?.setText(getTwoDpNoComma(initChallenge?.initialAmount as Float))
+                    }*/
+                }catch (r:Exception){
+                    r.printStackTrace()
                 }
             }
         })

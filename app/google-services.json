@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "503723693064-6ipl59jqi6c7dkom4q795fpgu0ntpb6n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "k.fiftytwochallenge",
+            "certificate_hash": "a918582ead5451c790c04a4b674cd647e9392ece"
+          }
+        },
+        {
           "client_id": "503723693064-0ooimcbb6j13k9j5jjuvss5j72cckob7.apps.googleusercontent.com",
           "client_type": 3
         }

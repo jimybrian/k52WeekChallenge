@@ -10,6 +10,7 @@ import com.android.volley.DefaultRetryPolicy
 import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.Volley
+import com.google.firebase.FirebaseApp
 import io.realm.Realm
 import io.realm.RealmConfiguration
 import k.fiftytwochallenge.models.ChallengeRepo
@@ -90,6 +91,8 @@ class k52App : Application(){
             //First Time Running Up
             Toast.makeText(applicationContext, "Welcome, your initial value has been set to 50, you can edit it any time.", Toast.LENGTH_SHORT).show()
         }
+
+        FirebaseApp.initializeApp(this@k52App)
     }
 
     public override fun attachBaseContext(base: Context?) {
@@ -145,9 +148,19 @@ fun getCurrentDateTimeReq():String{
 }
 
 //Two dp
-fun getTwoDp(num: Float): String? {
+fun getTwoDpNoComma(num: Float): String? {
     try {
         return String.format("%.0f", num)
+    } catch (r: Exception) {
+        r.printStackTrace()
+        return null
+    }
+
+}
+
+fun getTwoDpComma(num: Float): String? {
+    try {
+        return String.format("%,.0f", num)
     } catch (r: Exception) {
         r.printStackTrace()
         return null

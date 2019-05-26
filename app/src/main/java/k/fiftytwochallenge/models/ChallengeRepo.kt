@@ -15,8 +15,7 @@ import k.fiftytwochallenge.dataModels.ChallengeModel
 import k.fiftytwochallenge.dataModels.WeekModel
 import k.fiftytwochallenge.getCurrentDate
 import k.fiftytwochallenge.getRandomColor
-import k.fiftytwochallenge.getTwoDp
-import org.ocpsoft.prettytime.units.Week
+import k.fiftytwochallenge.getTwoDpComma
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -145,7 +144,7 @@ class ChallengeRepo(){
             initialChallenge?.totalAmount = totalAmount
 
             rlm?.commitTransaction()
-            txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+            txTotalAmount?.setText(getTwoDpComma(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
             return true
         }catch (r:Exception){
             r.printStackTrace()
@@ -182,7 +181,7 @@ class ChallengeRepo(){
                     initialChallenge?.totalAmount = totalAmount
 
                     rlm?.commitTransaction()
-                    txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+                    txTotalAmount?.setText(getTwoDpComma(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
                     return true
                 }catch (r:Exception){
                     r.printStackTrace()
@@ -199,8 +198,8 @@ class ChallengeRepo(){
                 var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
 
                 if(initialChallenge != null){
-                    txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
-//            etInitialAmount?.setText(getTwoDp(initialChallenge?.initialAmount))
+                    txTotalAmount?.setText(getTwoDpComma(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+//            etInitialAmount?.setText(getTwoDpComma(initialChallenge?.initialAmount))
 
                     if(lsInitialCats?.size as Int > 0){
                         var wkAdapter:WeekAdapter = WeekAdapter(act as Activity, lsInitialCats)
@@ -238,8 +237,8 @@ class ChallengeRepo(){
         var lsInitialCats = rlm?.where(WeekModel::class.java)?.sort("weekNumber", Sort.ASCENDING)?.findAll()
 
         if(initialChallenge != null){
-            txTotalAmount?.setText(getTwoDp(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
-//            etInitialAmount?.setText(getTwoDp(initialChallenge?.initialAmount))
+            txTotalAmount?.setText(getTwoDpComma(initialChallenge?.totalAmount as Float) + " " + act?.resources?.getString(R.string.currency))
+//            etInitialAmount?.setText(getTwoDpComma(initialChallenge?.initialAmount))
 
             if(lsInitialCats?.size as Int > 0){
                 var wkAdapter:WeekAdapter = WeekAdapter(act as Activity, lsInitialCats)
